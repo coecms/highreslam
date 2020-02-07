@@ -8,18 +8,13 @@
 +    CALL Gather_Field_saw( local_lsm_out, glob_lsm_out,                            &
 @@ -629 +631 @@
 -        CALL rcf_spiral_circle_s(glob_lsm_out, index_targ_sea,                 &
-+        CALL write_spiral_circle_s('sea.nc',glob_lsm_out, index_targ_sea,                 &
++        CALL read_spiral_circle_s('sea.nc',glob_lsm_out, index_targ_sea,                 &
 @@ -638 +640 @@
 -        CALL rcf_spiral_circle_s(glob_lsm_out, index_targ_land,                &
-+        CALL write_spiral_circle_s('land_unc.nc', glob_lsm_out, index_targ_land,                &
++        CALL read_spiral_circle_s('land_unc.nc', glob_lsm_out, index_targ_land,                &
 @@ -647 +649 @@
 -        CALL rcf_spiral_circle_s(glob_lsm_out, index_targ_land,                &
-+        CALL write_spiral_circle_s('land_con.nc',glob_lsm_out, index_targ_land,                &
-@@ -651,0 +654,4 @@
-+
-+        errorstatus = 1
-+        cmessage = 'Wrote spiral_circle data'
-+        call ereport(routinename, errorstatus, cmessage)
++        CALL read_spiral_circle_s('land_con.nc',glob_lsm_out, index_targ_land,                &
 --- fcm-make2.cfg	2019-12-05 16:32:56.000000000 +1100
 +++ fcm-make2.cfg	2020-01-22 10:43:19.000000000 +1100
 @@ -148 +148 @@
