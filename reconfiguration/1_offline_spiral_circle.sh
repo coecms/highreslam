@@ -23,12 +23,20 @@ BUILD_DIR="$CYLC_DIR/share/fcm_make"
 
 test -d "$BUILD_DIR"
 
-SCRIPTDIR=$(dirname "$(readlink -f "$0")")
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
-pushd "$BUILD_DIR"
+module load intel-compiler
+module load openmpi/4.0.2
+module load netcdf/4.7.1
 
-cp "$SCRIPT_DIR/write_spiral_circle_mod.f90" extract/um/src/utility/qxreconf
-cp "$SCRIPT_DIR/gather_saw.f90" extract/um/src/utility/qxreconf
-patch -p0 < "$SCRIPT_DIR/write_spiral_circle.patch"
+mkdir -p build
+pushd build
+
+mpif90 -O3 -g -traceback -c "$BUILD_DIR/extract/shumlib/shum_constants/src/f_shum_conversions_mod.f90"
+mpif90 -O3 -g -traceback -c "$BUILD_DIR/extract/shumlib/shum_spiral_search/src/f_shum_spiral_search.f90"
+mpif90 -O3 -g -traceback -c "$SCRIPT_DIR/offline_spiral_circle.f90"
+mpif90 "$SCRIPT_DIR/main.f90" f_shum_conversions_mod.o f_shum_spiral_search.o offline_spiral_circle.o -o offline_spiral_circle -lnetcdff
 
 popd
+
+qsub -v PROJECT,RUNID "$SCRIPT_DIR/run_offline_spiral_circle.pbs"

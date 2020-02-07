@@ -26,9 +26,7 @@
 source ./build.env
 ulimit -s unlimited
 
-# sc_con.nc0* sc_sea.nc0* done
-
-for sc in /scratch/w35/saw562/cylc-run/u-bq574/work/20170326T1800Z/Aus_d0036_RA2M_um_recon/{land_con,land_unc,sea}96.nc{0000..11}; do
+for sc in ~/cylc-run/$RUNID/work/20170326T1800Z/Aus_d0036_RA2M_um_recon/{land_con,land_unc,sea}.nc0*; do
     basename $sc
 
     mpirun  ./build/offline_spiral_circle $sc

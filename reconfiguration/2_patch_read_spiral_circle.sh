@@ -21,13 +21,13 @@ RUNID="$1"
 CYLC_DIR="~/cylc-run/$RUNID"
 BUILD_DIR="$CYLC_DIR/share/fcm_make"
 
-test -d "$SOURCE_DIR"
+test -d "$BUILD_DIR"
 
-SCRIPTDIR=$(dirname "$(readlink -f "$0")")
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 pushd "$BUILD_DIR"
 
-patch --reverse -p0 < "$SCRIPTDIR/write_spiral_circle.patch"
-patch -p0 < "$SCRIPTDIR/read_spiral_circle.patch"
+patch --reverse -p0 < "$SCRIPT_DIR/write_spiral_circle.patch"
+patch -p0 < "$SCRIPT_DIR/read_spiral_circle.patch"
 
 popd
