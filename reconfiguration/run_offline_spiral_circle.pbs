@@ -17,14 +17,16 @@
 
 #PBS -q normal
 #PBS -l walltime=3:00:00
-#PBS -l ncpus=96
-#PBS -l mem=192gb
+#PBS -l ncpus=192
+#PBS -l mem=768gb
 #PBS -l wd
 #PBS -j oe
 #PBS -m be
+#PBS -l storage=scratch/ly62+scratch/w35+gdata/w35
 
-source ./build.env
 ulimit -s unlimited
+
+module load openmpi/4.0.2
 
 for sc in ~/cylc-run/$RUNID/work/20170326T1800Z/Aus_d0036_RA2M_um_recon/{land_con,land_unc,sea}.nc0*; do
     basename $sc

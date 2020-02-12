@@ -100,10 +100,12 @@ contains
 
     subroutine read_netcdf(path, sc)
         use netcdf4_f03
+        use mpi_f08
         character(len=*), intent(in) :: path
         type(spiral_circle_data), intent(out) :: sc
 
         integer :: ncid
+        integer(kind=c_int64_t), allocatable :: output_idx(:)
 
         call nfe(nf_open(path, NF_NOWRITE, ncid))
 
@@ -112,6 +114,7 @@ contains
         call read_var(ncid, 'flat', 'lsm', sc%lsm)
         call read_var(ncid, 'flat', 'unres_mask', sc%unres)
         call read_var(ncid, 'unres', 'input', sc%input_idx)
+        call read_var(ncid, 'unres', 'output', output_idx)
 
         call nfe(nf_get_att(ncid, NF_GLOBAL, 'is_land_field', sc%is_land_field))
         call nfe(nf_get_att(ncid, NF_GLOBAL, 'constrained', sc%constrained))
@@ -124,6 +127,12 @@ contains
         sc%constrained_max_dist = 1000
 
         call nfe(nf_close(ncid))
+
+        !if (output_idx(size(output_idx)) > 0) then
+        !    ! Already processed
+        !    call mpi_finalize()
+        !    call exit(0)
+        !end if
         
     end subroutine
 
@@ -155,12 +164,14 @@ contains
             write(*,*) sc%is_land_field, sc%constrained, sc%cyclic_domain
         end if
 
+        ! Work out how much data each MPI rank will analyse
         allocate(recvcounts(npes), displs(npes))
         recvcounts = size(sc%input_idx) / npes 
-        displs(1) = 1
+        displs(1) = 0
         do i=2,npes
             displs(i) = displs(i-1) + recvcounts(i-1)
         end do
+        ! Last rank gets any leftovers
         recvcounts(npes) = size(sc%input_idx) - displs(npes)
 
         if (size(sc%lat) * size(sc%lon) /= size(sc%lsm)) then

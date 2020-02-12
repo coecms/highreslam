@@ -23,10 +23,10 @@ BUILD_DIR="$CYLC_DIR/share/fcm_make"
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
-pushd "$BUILD_DIR"
+module load conda
 
-cp "$SCRIPT_DIR/write_spiral_circle_mod.f90" extract/um/src/utility/qxreconf
-cp "$SCRIPT_DIR/gather_saw.f90" extract/um/src/utility/qxreconf
-patch -p0 < "$SCRIPT_DIR/write_spiral_circle.patch"
+for sc in ~/cylc-run/$RUNID/work/20170326T1800Z/Aus_d0036_RA2M_um_recon/{land_con,land_unc,sea}.nc0*; do
+    basename $sc
 
-popd
+    python $SCRIPT_DIR/check_sc.py $sc
+done

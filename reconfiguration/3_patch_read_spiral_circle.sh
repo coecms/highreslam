@@ -18,10 +18,8 @@
 set -eu
 
 RUNID="$1"
-CYLC_DIR="~/cylc-run/$RUNID"
+CYLC_DIR="$HOME/cylc-run/$RUNID"
 BUILD_DIR="$CYLC_DIR/share/fcm_make"
-
-test -d "$BUILD_DIR"
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
